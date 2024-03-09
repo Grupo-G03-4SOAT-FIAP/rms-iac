@@ -1,8 +1,8 @@
 # rms-iac
 Contains the Infrastructure as code (IaC) of the [RMS project](https://github.com/Grupo-G03-4SOAT-FIAP/rms-bff).
 
-[badge do CD aqui]
-[badge do CI aqui]
+[![Terraform Apply](https://github.com/Grupo-G03-4SOAT-FIAP/rms-iac/actions/workflows/terraform-apply.yml/badge.svg)](https://github.com/Grupo-G03-4SOAT-FIAP/rms-iac/actions/workflows/terraform-apply.yml)
+[![Terraform Plan](https://github.com/Grupo-G03-4SOAT-FIAP/rms-iac/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/Grupo-G03-4SOAT-FIAP/rms-iac/actions/workflows/terraform-plan.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Grupo-G03-4SOAT-FIAP_rms-iac&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Grupo-G03-4SOAT-FIAP_rms-iac)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Grupo-G03-4SOAT-FIAP_rms-iac&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Grupo-G03-4SOAT-FIAP_rms-iac)
 
