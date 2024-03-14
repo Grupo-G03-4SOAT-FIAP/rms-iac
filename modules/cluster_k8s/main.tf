@@ -28,17 +28,10 @@ provider "helm" {
   }
 }
 
-data "aws_availability_zones" "available" {}
-
 locals {
-  # name   = basename(path.cwd)
-  name   = "rms-eks"
-  region = "us-east-1"
-
-  tags = {
-    Blueprint  = local.name
-    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
-  }
+  name   = "rms-prd-k8scluster"
+  region = var.region
+  tags   = var.tags
 }
 
 ################################################################################
@@ -47,7 +40,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.5"
+  version = "~> 20.8"
 
   cluster_name                   = local.name
   cluster_version                = "1.29"
@@ -67,7 +60,7 @@ module "eks" {
   subnet_ids = var.private_subnets
 
   eks_managed_node_groups = {
-    initial = {
+    default = {
       instance_types = ["t3.medium"] # A instance_type do Free Tier é t2.micro
 
       min_size     = 1
@@ -83,9 +76,12 @@ module "eks" {
 # EKS Blueprints Addons
 ################################################################################
 
+# Terraform module which provisions addons on Amazon EKS clusters
+# https://registry.terraform.io/modules/aws-ia/eks-blueprints-addons/aws/latest
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.15"
+  version = "~> 1.16"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -116,7 +112,7 @@ resource "helm_release" "csi-secrets-store" {
   namespace  = "kube-system"
 
   # Optional Values
-  # https://secrets-store-csi-driver.sigs.k8s.io/getting-started/installation.html#optional-values
+  # See https://secrets-store-csi-driver.sigs.k8s.io/getting-started/installation.html#optional-values
   set {
     name  = "syncSecret.enabled"
     value = "true"
@@ -146,10 +142,56 @@ resource "helm_release" "secrets-provider-aws" {
 }
 
 ################################################################################
+# Namespaces
+################################################################################
+
+# Declare o(s) namespaces caso deseje que o Terraform exclua os Services, 
+# e consequentemente os Load Balancers atrelados a eles, ao fazer "terraform destroy"
+
+resource "kubernetes_namespace_v1" "rms" {
+  metadata {
+    name = var.app_namespace
+  }
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+################################################################################
 # Supporting Resources
 ################################################################################
 
+# Configuração de uma conta de serviço do Kubernetes para assumir um perfil do IAM
+# Todos os Pods configurados para usar a conta de serviço podem então acessar quaisquer AWS service (Serviço da AWS) para os quais a função tenha permissões de acesso.
+# https://docs.aws.amazon.com/pt_br/eks/latest/userguide/associate-service-account-role.html
 
+resource "aws_iam_role" "serviceaccount_role" {
+  name = "eksdemo-secretsmanager-role"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = module.eks.oidc_provider_arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${module.eks.oidc_provider}:aud" : "sts.amazonaws.com",
+            "${module.eks.oidc_provider}:sub" : "system:serviceaccount:${var.app_namespace}:${var.serviceaccount_name}"
+          }
+        }
+      },
+    ]
+  })
+
+  tags = local.tags
+}
 
 # NOTAS
 

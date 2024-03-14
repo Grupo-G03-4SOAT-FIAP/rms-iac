@@ -6,11 +6,7 @@ resource "aws_db_subnet_group" "rms" {
   name       = "rms-prod-subnetgroup"
   subnet_ids = var.public_subnets
 
-  tags = {
-    Project     = "rms"
-    Terraform   = "true"
-    Environment = "prod"
-  }
+  tags = var.tags
 }
 
 resource "aws_security_group" "rds" {
@@ -31,11 +27,7 @@ resource "aws_security_group" "rds" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Project     = "rms"
-    Terraform   = "true"
-    Environment = "prod"
-  }
+  tags = var.tags
 }
 
 resource "aws_db_parameter_group" "rms" {
@@ -63,11 +55,7 @@ resource "aws_db_instance" "rms" {
   publicly_accessible         = true
   skip_final_snapshot         = true
 
-  tags = {
-    Project     = "rms"
-    Terraform   = "true"
-    Environment = "prod"
-  }
+  tags = var.tags
 }
 
 # Use the output of the `master_user_secret` object, which includes `secret_arn`,

@@ -3,6 +3,12 @@ variable "region" {
   description = "AWS region"
 }
 
+variable "tags" {
+  description = "Tags to set."
+  type        = map(string)
+  default     = {}
+}
+
 variable "vpc_id" {
   description = "The ID of the VPC"
   type        = string
