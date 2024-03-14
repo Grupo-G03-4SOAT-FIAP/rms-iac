@@ -6,9 +6,9 @@ locals {
   region = var.region
 }
 
-resource "aws_secretsmanager_secret" "mercado_pago" {
-  name        = "prod/RMS/MercadoPago"
-  description = "Armazena as credenciais do Mercado Pago"
+resource "aws_secretsmanager_secret" "cognito" {
+  name        = "prod/RMS/Cognito"
+  description = "Armazena as credenciais do Amazon Cognito"
 
   # recovery_window_in_days = 7 # (Optional) Number of days that AWS Secrets Manager waits before it can delete the secret. This value can be 0 to force deletion without recovery or range from 7 to 30 days. The default value is 30.
   recovery_window_in_days = 0
@@ -22,19 +22,16 @@ variable "credenciais" {
   default = {
     # Inicializa as Keys, vazias, em branco
     # Por segurança, após o provisionamento do Secret preencha os valores abaixo manualmente no Console da AWS no link abaixo: 
-    # https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=prod/RMS/MercadoPago&region=us-east-1
-    ACCESS_TOKEN_MERCADOPAGO    = null
-    USER_ID_MERCADOPAGO         = null
-    EXTERNAL_POS_ID_MERCADOPAGO = null
-    WEBHOOK_URL_MERCADOPAGO     = null
-    IDEMPOTENCY_KEY_MERCADOPAGO = null
+    # https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=prod/RMS/Cognito&region=us-east-1
+    COGNITO_USER_POOL_ID = null
+    COGNITO_CLIENT_ID    = null
   }
 
   type = map(string)
 }
 
 resource "aws_secretsmanager_secret_version" "version1" {
-  secret_id     = aws_secretsmanager_secret.mercado_pago.id
+  secret_id     = aws_secretsmanager_secret.cognito.id
   secret_string = jsonencode(var.credenciais)
 }
 
@@ -42,8 +39,8 @@ resource "aws_secretsmanager_secret_version" "version1" {
 # Policies
 ################################################################################
 
-resource "aws_iam_policy" "policy_mercadopago" {
-  name        = "policy-mercadopago"
+resource "aws_iam_policy" "policy_cognito" {
+  name        = "policy-cognito"
   description = "Permite acesso de leitura ao Secret no AWS Secrets Manager"
 
   # Terraform's "jsonencode" function converts a
@@ -57,7 +54,7 @@ resource "aws_iam_policy" "policy_mercadopago" {
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ]
-        Resource = aws_secretsmanager_secret.mercado_pago.arn
+        Resource = aws_secretsmanager_secret.cognito.arn
       },
     ]
   })

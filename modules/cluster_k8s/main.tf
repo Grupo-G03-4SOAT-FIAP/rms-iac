@@ -63,8 +63,11 @@ module "eks" {
     default = {
       instance_types = ["t3.medium"] # A instance_type do Free Tier é t2.micro
 
+      # min_size     = 2
+      # max_size     = 10
+      # desired_size = 2
       min_size     = 1
-      max_size     = 5
+      max_size     = 3
       desired_size = 1
     }
   }
@@ -147,6 +150,16 @@ resource "helm_release" "secrets-provider-aws" {
 
 # Declare o(s) namespaces caso deseje que o Terraform exclua os Services, 
 # e consequentemente os Load Balancers atrelados a eles, ao fazer "terraform destroy"
+
+# resource "kubernetes_namespace_v1" "app" {
+#   metadata {
+#     name = "app"
+#   }
+
+#   depends_on = [
+#     module.eks
+#   ]
+# }
 
 resource "kubernetes_namespace_v1" "rms" {
   metadata {
