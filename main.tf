@@ -1,5 +1,9 @@
+provider "aws" {
+  region = local.region
+}
+
 locals {
-  region = "us-east-1"
+  region = var.region
 
   tags = {
     Project     = "rms"
@@ -42,6 +46,13 @@ module "cluster_k8s" {
   serviceaccount_name = "eksdemo-secretmanager-sa"
 
   tags = local.tags
+}
+
+module "registry" {
+  source = "./modules/registry"
+
+  region = local.region
+  tags   = local.tags
 }
 
 module "db" {

@@ -23,6 +23,11 @@ output "cluster_serviceaccount_name" {
   value       = module.cluster_k8s.serviceaccount_name
 }
 
+output "repository_url" {
+  description = "The URL of the repository (in the form aws_account_id.dkr.ecr.region.amazonaws.com/repositoryName)."
+  value       = module.registry.repository_url
+}
+
 output "rds_endpoint" {
   description = "RDS instance endpoint"
   value       = module.db.rds_endpoint
