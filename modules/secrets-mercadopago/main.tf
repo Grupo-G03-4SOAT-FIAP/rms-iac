@@ -10,7 +10,8 @@ resource "aws_secretsmanager_secret" "mercado_pago" {
   name        = "prod/RMS/MercadoPago"
   description = "Armazena as credenciais do Mercado Pago"
 
-  recovery_window_in_days = 0 # (Optional) Number of days that AWS Secrets Manager waits before it can delete the secret. This value can be 0 to force deletion without recovery or range from 7 to 30 days. The default value is 30.
+  # recovery_window_in_days = 7 # (Optional) Number of days that AWS Secrets Manager waits before it can delete the secret. This value can be 0 to force deletion without recovery or range from 7 to 30 days. The default value is 30.
+  recovery_window_in_days = 0
 
   tags = var.tags
 }
@@ -40,7 +41,7 @@ resource "aws_secretsmanager_secret_version" "version1" {
 # Policies
 ################################################################################
 
-resource "aws_iam_policy" "policy-mercadopago" {
+resource "aws_iam_policy" "policy_mercadopago" {
   name        = "policy-mercadopago"
   description = "Permite acesso de leitura ao Secret no AWS Secrets Manager"
 
@@ -61,15 +62,6 @@ resource "aws_iam_policy" "policy-mercadopago" {
   })
 
   tags = var.tags
-}
-
-################################################################################
-# Attach Policies to Roles
-################################################################################
-
-resource "aws_iam_role_policy_attachment" "attach-to-role" {
-  role       = var.role_name_to_attach
-  policy_arn = aws_iam_policy.policy-mercadopago.arn
 }
 
 # Baseado no tutorial "Build and use a local module" do portal HashiCorp Developer em 

@@ -15,10 +15,10 @@ output "secretsmanager_secret_arn" {
 
 output "secretsmanager_secret_policy_name" {
   description = "The name of the policy."
-  value       = aws_iam_policy.policy-mercadopago.name
+  value       = aws_iam_policy.policy_mercadopago.name
 }
 
 output "secretsmanager_secret_policy_arn" {
   description = "The ARN assigned by AWS to the policy."
-  value       = aws_iam_policy.policy-mercadopago.arn
+  value       = aws_iam_policy.policy_mercadopago.arn
 }

@@ -47,13 +47,16 @@ resource "aws_db_instance" "rms" {
   db_name                     = "rms"
   engine                      = "postgres"
   engine_version              = "16.1"
-  manage_master_user_password = true # Guarda o usuário e senha do banco de dados no AWS Secrets Manager
+  manage_master_user_password = true # Guarda o usuário e senha do banco de dados em um Secret no AWS Secrets Manager
   username                    = "postgres"
   db_subnet_group_name        = aws_db_subnet_group.rms.name
   vpc_security_group_ids      = [aws_security_group.rds.id]
   parameter_group_name        = aws_db_parameter_group.rms.name
   publicly_accessible         = true
-  skip_final_snapshot         = true
+  # skip_final_snapshot         = false
+  skip_final_snapshot = true
+  # storage_encrypted   = true
+  storage_encrypted = false
 
   tags = var.tags
 }
@@ -72,6 +75,33 @@ resource "aws_secretsmanager_secret_rotation" "rms" {
 # elsewhere.
 data "aws_secretsmanager_secret" "rms" {
   arn = aws_db_instance.rms.master_user_secret[0].secret_arn
+}
+
+################################################################################
+# Master User Secret Policy
+################################################################################
+
+resource "aws_iam_policy" "master_user_secret_policy" {
+  name        = "rds-master-user-secret-policy"
+  description = "Permite acesso de leitura ao Secret no AWS Secrets Manager"
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = data.aws_secretsmanager_secret.rms.arn
+      },
+    ]
+  })
+
+  tags = var.tags
 }
 
 # Baseado no tutorial "Manage AWS RDS instances" do portal HashiCorp Developer em 
