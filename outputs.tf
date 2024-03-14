@@ -28,6 +28,11 @@ output "repository_url" {
   value       = module.registry.repository_url
 }
 
+output "docker_login" {
+  description = "Log in to Amazon ECR: run the following command to authenticate Docker to the Amazon ECR registry"
+  value       = "aws ecr get-login-password --region ${local.region} | docker login --username AWS --password-stdin ${module.registry.repository_url}"
+}
+
 output "rds_endpoint" {
   description = "RDS instance endpoint"
   value       = module.db.rds_endpoint
