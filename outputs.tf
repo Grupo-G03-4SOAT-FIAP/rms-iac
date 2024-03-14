@@ -13,14 +13,14 @@ output "cluster_endpoint" {
   value       = module.cluster_k8s.cluster_endpoint
 }
 
-output "cluster_serviceaccount_role_name" {
-  description = "Friendly name of the role"
-  value       = module.cluster_k8s.serviceaccount_role_name
-}
-
 output "cluster_serviceaccount_role_arn" {
   description = "Amazon Resource Name (ARN) specifying the role."
   value       = module.cluster_k8s.serviceaccount_role_arn
+}
+
+output "cluster_serviceaccount_name" {
+  description = "Kubernetes ServiceAccount name"
+  value       = module.cluster_k8s.serviceaccount_name
 }
 
 output "rds_endpoint" {
@@ -36,7 +36,12 @@ output "rds_master_user_secret_name" {
 
 output "mercadopago_secret_name" {
   description = "Friendly name of the new secret."
-  value       = module.secrets_mercadopago.secretsmanager_secret_name
+  value       = module.secrets_cognito.secretsmanager_secret_name
+}
+
+output "cognito_secret_name" {
+  description = "Friendly name of the new secret."
+  value       = module.secrets_cognito.secretsmanager_secret_name
 }
 
 output "configure_kubectl" {

@@ -56,7 +56,7 @@ module "db" {
   tags = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "attach_db_secret_to_role" {
+resource "aws_iam_role_policy_attachment" "db_secret_to_role" {
   role       = module.cluster_k8s.serviceaccount_role_name
   policy_arn = module.db.rds_master_user_secret_policy_arn
 
@@ -73,13 +73,30 @@ module "secrets_mercadopago" {
   tags   = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "attach_mp_secret_to_role" {
+resource "aws_iam_role_policy_attachment" "mp_secret_to_role" {
   role       = module.cluster_k8s.serviceaccount_role_name
   policy_arn = module.secrets_mercadopago.secretsmanager_secret_policy_arn
 
   depends_on = [
     module.cluster_k8s,
     module.secrets_mercadopago
+  ]
+}
+
+module "secrets_cognito" {
+  source = "./modules/secrets-cognito"
+
+  region = local.region
+  tags   = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "cognito_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.secrets_cognito.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s,
+    module.secrets_cognito
   ]
 }
 

@@ -28,6 +28,11 @@ output "oidc_provider_arn" {
   value       = module.eks.oidc_provider_arn
 }
 
+output "serviceaccount_name" {
+  description = "Kubernetes ServiceAccount name"
+  value       = var.serviceaccount_name
+}
+
 output "serviceaccount_role_name" {
   description = "Friendly name of the role"
   value       = aws_iam_role.serviceaccount_role.name
