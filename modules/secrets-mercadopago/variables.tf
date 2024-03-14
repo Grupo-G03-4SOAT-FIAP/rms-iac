@@ -8,3 +8,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "role_name_to_attach" {
+  description = "Friendly name of the role"
+  type        = string
+}

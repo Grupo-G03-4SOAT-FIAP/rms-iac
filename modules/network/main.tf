@@ -1,4 +1,19 @@
-data "aws_availability_zones" "available" {}
+provider "aws" {
+  region = local.region
+}
+
+locals {
+  region = var.region
+}
+
+# Filter out local zones, which are not currently supported 
+# with Kubernetes managed node groups
+data "aws_availability_zones" "available" {
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -27,11 +42,7 @@ module "vpc" {
     "kubernetes.io/role/internal-elb" = 1
   }
 
-  tags = {
-    Project     = "rms"
-    Terraform   = "true"
-    Environment = "prod"
-  }
+  tags = var.tags
 }
 
 # Baseado no tutorial "Provision an EKS cluster (AWS)" do portal HashiCorp Developer em 
