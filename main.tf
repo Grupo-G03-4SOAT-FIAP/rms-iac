@@ -70,7 +70,7 @@ module "db" {
 module "secrets_db" {
   source = "./modules/secrets-db"
 
-  rds_endpoint   = module.db.rds_endpoint
+  rds_address    = module.db.rds_address
   rds_port       = module.db.rds_port
   rds_identifier = module.db.rds_identifier
   rds_engine     = module.db.rds_engine

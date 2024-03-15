@@ -28,9 +28,9 @@ output "docker_login" {
   value       = "aws ecr get-login-password --region ${local.region} | docker login --username AWS --password-stdin ${module.registry.repository_url}"
 }
 
-output "rds_endpoint" {
-  description = "RDS instance endpoint"
-  value       = module.db.rds_endpoint
+output "rds_address" {
+  description = "RDS instance address"
+  value       = module.db.rds_address
   sensitive   = true
 }
 

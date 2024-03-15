@@ -19,8 +19,8 @@ variable "rds_engine" {
   type        = string
 }
 
-variable "rds_endpoint" {
-  description = "RDS instance endpoint"
+variable "rds_address" {
+  description = "RDS instance address"
   type        = string
 }
 

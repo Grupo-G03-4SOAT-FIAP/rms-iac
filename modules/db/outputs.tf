@@ -9,9 +9,9 @@ output "rds_hostname" {
   sensitive   = true
 }
 
-output "rds_endpoint" {
-  description = "RDS instance endpoint"
-  value       = aws_db_instance.rms.endpoint
+output "rds_address" {
+  description = "RDS instance address"
+  value       = aws_db_instance.rms.address
   sensitive   = true
 }
 
