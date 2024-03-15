@@ -151,16 +151,6 @@ resource "helm_release" "secrets-provider-aws" {
 # Declare o(s) namespaces caso deseje que o Terraform exclua os Services, 
 # e consequentemente os Load Balancers atrelados a eles, ao fazer "terraform destroy"
 
-# resource "kubernetes_namespace_v1" "app" {
-#   metadata {
-#     name = "app"
-#   }
-
-#   depends_on = [
-#     module.eks
-#   ]
-# }
-
 resource "kubernetes_namespace_v1" "rms" {
   metadata {
     name = var.app_namespace
@@ -180,7 +170,7 @@ resource "kubernetes_namespace_v1" "rms" {
 # https://docs.aws.amazon.com/pt_br/eks/latest/userguide/associate-service-account-role.html
 
 resource "aws_iam_role" "serviceaccount_role" {
-  name = "eksdemo-secretsmanager-role"
+  name = "aws-iam-serviceaccount-role"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.

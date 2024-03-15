@@ -42,8 +42,8 @@ module "cluster_k8s" {
   public_subnets  = module.network.public_subnets
   private_subnets = module.network.private_subnets
 
-  app_namespace       = "rms" # O "name" do namespace do k8s onde será executada a sua aplicação
-  serviceaccount_name = "eksdemo-secretmanager-sa"
+  app_namespace       = "rms" # O 'name' do namespace do k8s onde será executada a sua aplicação
+  serviceaccount_name = "aws-iam-serviceaccount"
 
   tags = local.tags
 }
