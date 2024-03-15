@@ -49,6 +49,16 @@ output "mercadopago_secret_name" {
   value       = module.secrets_cognito.secretsmanager_secret_name
 }
 
+output "cognito_user_pool_id" {
+  description = "ID of the user pool."
+  value       = module.cognito_ciam.cognito_user_pool_id
+}
+
+output "cognito_user_pool_client_id" {
+  description = "Unique identifier for the user pool client."
+  value       = module.cognito_ciam.cognito_user_pool_client_id
+}
+
 output "cognito_secret_name" {
   description = "Friendly name of the new secret."
   value       = module.secrets_cognito.secretsmanager_secret_name

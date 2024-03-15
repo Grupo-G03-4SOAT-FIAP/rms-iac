@@ -18,21 +18,16 @@ resource "aws_secretsmanager_secret" "cognito" {
 
 # The map here can come from other supported configurations
 # like locals, resource attribute, map() built-in, etc.
-variable "initial" {
-  default = {
-    # Inicializa as Keys, vazias, em branco
-    # Por segurança, após o provisionamento do Secret preencha os valores abaixo manualmente no Console da AWS no link abaixo: 
-    # https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=prod/RMS/Cognito&region=us-east-1
-    COGNITO_USER_POOL_ID = null
-    COGNITO_CLIENT_ID    = null
+locals {
+  initial = {
+    COGNITO_USER_POOL_ID = "${var.cognito_user_pool_id}"
+    COGNITO_CLIENT_ID    = "${var.cognito_user_pool_client_id}"
   }
-
-  type = map(string)
 }
 
 resource "aws_secretsmanager_secret_version" "version1" {
   secret_id     = aws_secretsmanager_secret.cognito.id
-  secret_string = jsonencode(var.initial)
+  secret_string = jsonencode(local.initial)
 }
 
 ################################################################################
