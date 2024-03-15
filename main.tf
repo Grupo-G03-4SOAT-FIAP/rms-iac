@@ -26,6 +26,18 @@ terraform destroy
 terraform destroy --auto-approve
 */
 
+/*
+# Para provisionar somente um módulo específico:
+terraform plan -target=module.cognito_ciam
+terraform apply -target=module.cognito_ciam
+terraform destroy -target module.cognito_ciam
+*/
+
+/*
+# Para remover um recurso específico do tfstate:
+module.cluster_k8s.kubernetes_namespace_v1.rms 
+*/
+
 module "network" {
   source = "./modules/network"
 
