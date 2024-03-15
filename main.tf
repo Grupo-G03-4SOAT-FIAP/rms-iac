@@ -67,9 +67,21 @@ module "db" {
   tags = local.tags
 }
 
+module "secrets_db" {
+  source = "./modules/secrets-db"
+
+  rds_endpoint   = module.db.rds_endpoint
+  rds_port       = module.db.rds_port
+  rds_identifier = module.db.rds_identifier
+  rds_engine     = module.db.rds_engine
+
+  region = local.region
+  tags   = local.tags
+}
+
 resource "aws_iam_role_policy_attachment" "db_secret_to_role" {
   role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.db.rds_master_user_secret_policy_arn
+  policy_arn = module.secrets_db.secretsmanager_secret_policy_arn
 
   depends_on = [
     module.cluster_k8s,

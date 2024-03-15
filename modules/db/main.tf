@@ -77,32 +77,5 @@ data "aws_secretsmanager_secret" "rms" {
   arn = aws_db_instance.rms.master_user_secret[0].secret_arn
 }
 
-################################################################################
-# Master User Secret Policy
-################################################################################
-
-resource "aws_iam_policy" "master_user_secret_policy" {
-  name        = "rds-master-user-secret-policy"
-  description = "Permite acesso de leitura ao Secret no AWS Secrets Manager"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
-        ]
-        Resource = data.aws_secretsmanager_secret.rms.arn
-      },
-    ]
-  })
-
-  tags = var.tags
-}
-
 # Baseado no tutorial "Manage AWS RDS instances" do portal HashiCorp Developer em 
 # https://developer.hashicorp.com/terraform/tutorials/aws/aws-rds
