@@ -1,3 +1,8 @@
+output "rds_identifier" {
+  description = "RDS instance identifier"
+  value       = aws_db_instance.rms.identifier
+}
+
 output "rds_hostname" {
   description = "RDS instance hostname"
   value       = aws_db_instance.rms.address
@@ -16,6 +21,11 @@ output "rds_port" {
   sensitive   = true
 }
 
+output "rds_engine" {
+  description = "RDS instance engine"
+  value       = aws_db_instance.rms.engine
+}
+
 output "rds_username" {
   description = "RDS instance root username"
   value       = aws_db_instance.rms.username
@@ -30,14 +40,4 @@ output "master_user_secret_name" {
 output "master_user_secret_arn" {
   description = "The Amazon Resource Name (ARN) of the master user secret."
   value       = data.aws_secretsmanager_secret.rms.arn
-}
-
-output "rds_master_user_secret_policy_name" {
-  description = "The name of the policy."
-  value       = aws_iam_policy.master_user_secret_policy.name
-}
-
-output "rds_master_user_secret_policy_arn" {
-  description = "The ARN assigned by AWS to the policy."
-  value       = aws_iam_policy.master_user_secret_policy.arn
 }

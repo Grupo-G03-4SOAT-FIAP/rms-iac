@@ -6,9 +6,9 @@ locals {
   region = var.region
 }
 
-resource "aws_secretsmanager_secret" "mercado_pago" {
-  name        = "prod/RMS/MercadoPago"
-  description = "Armazena as credenciais do Mercado Pago"
+resource "aws_secretsmanager_secret" "db" {
+  name        = "prod/RMS/Postgresql"
+  description = "Armazena as credenciais do banco de dados PostgreSQL"
 
   # recovery_window_in_days = 7 # (Optional) Number of days that AWS Secrets Manager waits before it can delete the secret. This value can be 0 to force deletion without recovery or range from 7 to 30 days. The default value is 30.
   recovery_window_in_days = 0
@@ -18,33 +18,32 @@ resource "aws_secretsmanager_secret" "mercado_pago" {
 
 # The map here can come from other supported configurations
 # like locals, resource attribute, map() built-in, etc.
-variable "initial" {
-  default = {
-    # Inicializa as Keys, vazias, em branco
+locals {
+  initial = {
+    # Inicializa as Keys com valores default
     # Por segurança, após o provisionamento do Secret preencha os valores abaixo manualmente no Console da AWS no link abaixo: 
     # https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=prod/RMS/MercadoPago&region=us-east-1
-    ACCESS_TOKEN_MERCADOPAGO    = null
-    USER_ID_MERCADOPAGO         = null
-    EXTERNAL_POS_ID_MERCADOPAGO = null
-    WEBHOOK_URL_MERCADOPAGO     = null
-    IDEMPOTENCY_KEY_MERCADOPAGO = null
+    username             = null
+    password             = null
+    engine               = "${var.rds_engine}"
+    host                 = "${var.rds_endpoint}"
+    port                 = "${var.rds_port}"
+    dbInstanceIdentifier = "${var.rds_identifier}"
   }
-
-  type = map(string)
 }
 
 resource "aws_secretsmanager_secret_version" "version1" {
-  secret_id     = aws_secretsmanager_secret.mercado_pago.id
-  secret_string = jsonencode(var.initial)
+  secret_id     = aws_secretsmanager_secret.db.id
+  secret_string = jsonencode(local.initial)
 }
 
 ################################################################################
 # Policies
 ################################################################################
 
-resource "aws_iam_policy" "policy_mercadopago" {
-  name        = "policy-mercadopago"
-  description = "Permite acesso somente leitura ao Secret ${aws_secretsmanager_secret.mercado_pago.name} no AWS Secrets Manager"
+resource "aws_iam_policy" "policy_secret_db" {
+  name        = "policy-secret-db"
+  description = "Permite acesso somente leitura ao Secret ${aws_secretsmanager_secret.db.name} no AWS Secrets Manager"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -57,7 +56,7 @@ resource "aws_iam_policy" "policy_mercadopago" {
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ]
-        Resource = aws_secretsmanager_secret.mercado_pago.arn
+        Resource = aws_secretsmanager_secret.db.arn
       },
     ]
   })

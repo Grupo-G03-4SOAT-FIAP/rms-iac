@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret" "cognito" {
 
 # The map here can come from other supported configurations
 # like locals, resource attribute, map() built-in, etc.
-variable "credenciais" {
+variable "initial" {
   default = {
     # Inicializa as Keys, vazias, em branco
     # Por segurança, após o provisionamento do Secret preencha os valores abaixo manualmente no Console da AWS no link abaixo: 
@@ -32,7 +32,7 @@ variable "credenciais" {
 
 resource "aws_secretsmanager_secret_version" "version1" {
   secret_id     = aws_secretsmanager_secret.cognito.id
-  secret_string = jsonencode(var.credenciais)
+  secret_string = jsonencode(var.initial)
 }
 
 ################################################################################
@@ -41,7 +41,7 @@ resource "aws_secretsmanager_secret_version" "version1" {
 
 resource "aws_iam_policy" "policy_cognito" {
   name        = "policy-cognito"
-  description = "Permite acesso de leitura ao Secret no AWS Secrets Manager"
+  description = "Permite acesso somente leitura ao Secret ${aws_secretsmanager_secret.cognito.name} no AWS Secrets Manager"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.

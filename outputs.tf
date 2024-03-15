@@ -8,11 +8,6 @@ output "cluster_name" {
   value       = module.cluster_k8s.cluster_name
 }
 
-output "cluster_endpoint" {
-  description = "Endpoint for EKS control plane"
-  value       = module.cluster_k8s.cluster_endpoint
-}
-
 output "cluster_serviceaccount_role_arn" {
   description = "Amazon Resource Name (ARN) specifying the role."
   value       = module.cluster_k8s.serviceaccount_role_arn
@@ -28,6 +23,11 @@ output "repository_url" {
   value       = module.registry.repository_url
 }
 
+output "docker_login" {
+  description = "Log in to Amazon ECR: run the following command to authenticate Docker to the Amazon ECR registry"
+  value       = "aws ecr get-login-password --region ${local.region} | docker login --username AWS --password-stdin ${module.registry.repository_url}"
+}
+
 output "rds_endpoint" {
   description = "RDS instance endpoint"
   value       = module.db.rds_endpoint
@@ -37,6 +37,11 @@ output "rds_endpoint" {
 output "rds_master_user_secret_name" {
   description = "The name of the master user secret."
   value       = module.db.master_user_secret_name
+}
+
+output "db_secret_name" {
+  description = "Friendly name of the new secret."
+  value       = module.secrets_db.secretsmanager_secret_name
 }
 
 output "mercadopago_secret_name" {
