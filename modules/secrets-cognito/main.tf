@@ -35,7 +35,7 @@ resource "aws_secretsmanager_secret_version" "version1" {
 ################################################################################
 
 resource "aws_iam_policy" "policy_cognito" {
-  name        = "policy-cognito"
+  name        = "policy-secret-cognito"
   description = "Permite acesso somente leitura ao Secret ${aws_secretsmanager_secret.cognito.name} no AWS Secrets Manager"
 
   # Terraform's "jsonencode" function converts a

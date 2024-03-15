@@ -43,7 +43,7 @@ resource "aws_secretsmanager_secret_version" "version1" {
 ################################################################################
 
 resource "aws_iam_policy" "policy_mercadopago" {
-  name        = "policy-mercadopago"
+  name        = "policy-secret-mercadopago"
   description = "Permite acesso somente leitura ao Secret ${aws_secretsmanager_secret.mercado_pago.name} no AWS Secrets Manager"
 
   # Terraform's "jsonencode" function converts a
