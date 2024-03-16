@@ -35,8 +35,12 @@ terraform destroy -target module.cognito_ciam
 
 /*
 # Para remover um recurso específico do tfstate:
-module.cluster_k8s.kubernetes_namespace_v1.rms 
+terraform state rm 'module.cluster_k8s.kubernetes_namespace_v1.rms'
 */
+
+################################################################################
+# Network
+################################################################################
 
 module "network" {
   source = "./modules/network"
@@ -44,6 +48,10 @@ module "network" {
   region = local.region
   tags   = local.tags
 }
+
+################################################################################
+# Kubernetes
+################################################################################
 
 module "cluster_k8s" {
   source = "./modules/cluster_k8s"
@@ -66,6 +74,10 @@ module "registry" {
   region = local.region
   tags   = local.tags
 }
+
+################################################################################
+# Database
+################################################################################
 
 module "db" {
   source = "./modules/db"
@@ -101,6 +113,10 @@ resource "aws_iam_role_policy_attachment" "db_secret_to_role" {
   ]
 }
 
+################################################################################
+# Secrets
+################################################################################
+
 module "secrets_mercadopago" {
   source = "./modules/secrets-mercadopago"
 
@@ -117,6 +133,10 @@ resource "aws_iam_role_policy_attachment" "mercadopago_secret_to_role" {
     module.secrets_mercadopago
   ]
 }
+
+################################################################################
+# Customer Identity and Access Management (CIAM)
+################################################################################
 
 module "cognito_ciam" {
   source = "./modules/cognito-ciam"
