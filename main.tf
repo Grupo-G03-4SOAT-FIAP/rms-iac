@@ -28,9 +28,9 @@ terraform destroy --auto-approve
 
 /*
 # Para provisionar somente um módulo específico:
-terraform plan -target=module.cognito_ciam
-terraform apply -target=module.cognito_ciam
-terraform destroy -target module.cognito_ciam
+terraform plan -target 'module.cognito_ciam'
+terraform apply -target 'module.cognito_ciam'
+terraform destroy -target 'module.cognito_ciam'
 */
 
 /*
