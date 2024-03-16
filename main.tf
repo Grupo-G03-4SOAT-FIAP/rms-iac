@@ -26,6 +26,18 @@ terraform destroy
 terraform destroy --auto-approve
 */
 
+/*
+# Para provisionar somente um módulo específico:
+terraform plan -target=module.cognito_ciam
+terraform apply -target=module.cognito_ciam
+terraform destroy -target module.cognito_ciam
+*/
+
+/*
+# Para remover um recurso específico do tfstate:
+module.cluster_k8s.kubernetes_namespace_v1.rms 
+*/
+
 module "network" {
   source = "./modules/network"
 
@@ -70,7 +82,7 @@ module "db" {
 module "secrets_db" {
   source = "./modules/secrets-db"
 
-  rds_endpoint   = module.db.rds_endpoint
+  rds_address    = module.db.rds_address
   rds_port       = module.db.rds_port
   rds_identifier = module.db.rds_identifier
   rds_engine     = module.db.rds_engine
@@ -96,7 +108,7 @@ module "secrets_mercadopago" {
   tags   = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "mp_secret_to_role" {
+resource "aws_iam_role_policy_attachment" "mercadopago_secret_to_role" {
   role       = module.cluster_k8s.serviceaccount_role_name
   policy_arn = module.secrets_mercadopago.secretsmanager_secret_policy_arn
 
@@ -106,8 +118,18 @@ resource "aws_iam_role_policy_attachment" "mp_secret_to_role" {
   ]
 }
 
+module "cognito_ciam" {
+  source = "./modules/cognito-ciam"
+
+  region = local.region
+  tags   = local.tags
+}
+
 module "secrets_cognito" {
   source = "./modules/secrets-cognito"
+
+  cognito_user_pool_id        = module.cognito_ciam.cognito_user_pool_id
+  cognito_user_pool_client_id = module.cognito_ciam.cognito_user_pool_client_id
 
   region = local.region
   tags   = local.tags
@@ -119,6 +141,7 @@ resource "aws_iam_role_policy_attachment" "cognito_secret_to_role" {
 
   depends_on = [
     module.cluster_k8s,
+    module.cognito_ciam,
     module.secrets_cognito
   ]
 }

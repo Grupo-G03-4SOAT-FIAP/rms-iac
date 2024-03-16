@@ -26,7 +26,7 @@ locals {
     username             = null
     password             = null
     engine               = "${var.rds_engine}"
-    host                 = "${var.rds_endpoint}"
+    host                 = "${var.rds_address}"
     port                 = "${var.rds_port}"
     dbInstanceIdentifier = "${var.rds_identifier}"
   }

@@ -14,7 +14,8 @@ module "ecr" {
 
   repository_name = "rms"
 
-  repository_force_delete = true # If true, will delete the repository even if it contains images. Defaults to false.
+  repository_image_tag_mutability = "MUTABLE" # Default "IMMUTABLE"
+  repository_force_delete         = true      # If true, will delete the repository even if it contains images. Defaults to false.
 
   repository_read_write_access_arns = [data.aws_caller_identity.current.arn]
 

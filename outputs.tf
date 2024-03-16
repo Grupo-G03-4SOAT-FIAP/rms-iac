@@ -28,9 +28,9 @@ output "docker_login" {
   value       = "aws ecr get-login-password --region ${local.region} | docker login --username AWS --password-stdin ${module.registry.repository_url}"
 }
 
-output "rds_endpoint" {
-  description = "RDS instance endpoint"
-  value       = module.db.rds_endpoint
+output "rds_address" {
+  description = "RDS instance address"
+  value       = module.db.rds_address
   sensitive   = true
 }
 
@@ -47,6 +47,16 @@ output "db_secret_name" {
 output "mercadopago_secret_name" {
   description = "Friendly name of the new secret."
   value       = module.secrets_cognito.secretsmanager_secret_name
+}
+
+output "cognito_user_pool_id" {
+  description = "ID of the user pool."
+  value       = module.cognito_ciam.cognito_user_pool_id
+}
+
+output "cognito_user_pool_client_id" {
+  description = "Unique identifier for the user pool client."
+  value       = module.cognito_ciam.cognito_user_pool_client_id
 }
 
 output "cognito_secret_name" {
