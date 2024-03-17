@@ -66,7 +66,7 @@ resource "aws_cognito_user_pool_client" "totem" {
 # Usuário anônimo para clientes que optarem por não se identificar
 resource "aws_cognito_user" "anonimo" {
   user_pool_id = aws_cognito_user_pool.rms.id
-  username     = "08763272008" # CPF - 11 dígitos
+  username     = "00000000191" # CPF - 11 dígitos
 
   attributes = {
     name  = "Cliente Anônimo"
