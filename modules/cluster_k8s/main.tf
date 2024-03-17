@@ -61,7 +61,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      instance_types = ["t3.medium"] # A instance_type do Free Tier é t2.micro
+      instance_types = ["t3.small"] # A instance_type do Free Tier é t2.micro
 
       # min_size     = 2
       # max_size     = 10
