@@ -51,12 +51,12 @@ output "mercadopago_secret_name" {
 
 output "cognito_user_pool_id" {
   description = "ID of the user pool."
-  value       = module.cognito_ciam.cognito_user_pool_id
+  value       = module.cognito_idp.cognito_user_pool_id
 }
 
 output "cognito_user_pool_client_id" {
   description = "Unique identifier for the user pool client."
-  value       = module.cognito_ciam.cognito_user_pool_client_id
+  value       = module.cognito_idp.cognito_user_pool_client_id
 }
 
 output "cognito_secret_name" {
