@@ -15,7 +15,7 @@ locals {
 /*
 # Command shortcuts
 terraform init
-terraform fmt
+terraform fmt -recursive
 terraform validate
 terraform plan
 terraform apply
@@ -28,9 +28,9 @@ terraform destroy --auto-approve
 
 /*
 # Para provisionar somente um módulo específico:
-terraform plan -target="module.cognito_ciam"
-terraform apply -target="module.cognito_ciam"
-terraform destroy -target="module.cognito_ciam"
+terraform plan -target="module.cognito_idp"
+terraform apply -target="module.cognito_idp"
+terraform destroy -target="module.cognito_idp"
 */
 
 /*
@@ -135,11 +135,11 @@ resource "aws_iam_role_policy_attachment" "mercadopago_secret_to_role" {
 }
 
 ################################################################################
-# Customer Identity and Access Management (CIAM)
+# Identity provider (IdP)
 ################################################################################
 
-module "cognito_ciam" {
-  source = "./modules/cognito-ciam"
+module "cognito_idp" {
+  source = "./modules/cognito-idp"
 
   region = local.region
   tags   = local.tags
@@ -148,8 +148,8 @@ module "cognito_ciam" {
 module "secrets_cognito" {
   source = "./modules/secrets-cognito"
 
-  cognito_user_pool_id        = module.cognito_ciam.cognito_user_pool_id
-  cognito_user_pool_client_id = module.cognito_ciam.cognito_user_pool_client_id
+  cognito_user_pool_id        = module.cognito_idp.cognito_user_pool_id
+  cognito_user_pool_client_id = module.cognito_idp.cognito_user_pool_client_id
 
   region = local.region
   tags   = local.tags
@@ -161,7 +161,7 @@ resource "aws_iam_role_policy_attachment" "cognito_secret_to_role" {
 
   depends_on = [
     module.cluster_k8s,
-    module.cognito_ciam,
+    module.cognito_idp,
     module.secrets_cognito
   ]
 }

@@ -30,9 +30,49 @@ export AWS_SECRET_ACCESS_KEY=???
 
 1. Clone este repositório;
 2. Navegue até a pasta raiz do projeto;
-3. Use o comando `terraform apply` para aplicar o plano de execução;
+3. Use o comando `terraform init` para baixar e instalar os módulos e providers;
+4. Use o comando `terraform fmt -recursive` para formatar e identar os arquivos .tf
+5. Use o comando `terraform validate` para validar os arquivos de configuração;
+6. Use o comando `terraform plan` para revisar o plano de execução;
+7. Use o comando `terraform apply` para aplicar o plano de execução;
+
+> Você também pode fazer `terraform apply --auto-approve` ou `terraform destroy --auto-approve` para aplicar o plano ou destruir a infra imediatamente, pulando a aprovação (não recomendado).
+
+<details>
+
+<summary>Como provisionar somente um módulo específico?</summary>
+
+<br>
+
+Para provisionar somente um módulo específico, use o parâmetro `-target`:
+
+```sh
+terraform init
+terraform apply -target="module.cognito_idp"
+terraform destroy -target="module.cognito_idp"
+```
+
+</details>
+
+<details>
+
+<summary>Como remover um recurso do tfstate?</summary>
+
+<br>
+
+Para remover um recurso do `terraform.tfstate` use o comando abaixo:
+
+```sh
+terraform state rm "module.cluster_k8s.kubernetes_namespace_v1.rms"
+```
+
+Isso é útil por exemplo quando o Terraform por algum motivo não é capaz de fazer a destruição de um recurso específico com `terraform destroy`, impedindo a destruição dos demais.
+
+</details>
 
 > Para excluir a infraestrutura provisionada pelo Terraform, use o comando `terraform destroy`
+
+> Você também pode visualizar o tfstate através do comando `terraform show`
 
 ## Projetos relacionados
 
