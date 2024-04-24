@@ -32,11 +32,16 @@ resource "aws_security_group" "rds" {
 
 resource "aws_db_parameter_group" "rms" {
   name   = "rms-prod-paramgroup"
-  family = "postgres16"
+  family = "postgres15"
 
   parameter {
     name  = "rds.force_ssl"
     value = "0" # Desativa o SSL obrigatório
+  }
+
+  parameter {
+    name  = "rds.logical_replication"
+    value = "1" # enable logical replication
   }
 }
 
@@ -46,7 +51,7 @@ resource "aws_db_instance" "rms" {
   allocated_storage           = 5
   db_name                     = "rms"
   engine                      = "postgres"
-  engine_version              = "16.1"
+  engine_version              = "15.6"
   manage_master_user_password = true # Guarda o usuário e senha do banco de dados em um Secret no AWS Secrets Manager
   username                    = "postgres"
   db_subnet_group_name        = aws_db_subnet_group.rms.name
