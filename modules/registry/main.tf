@@ -10,7 +10,7 @@ data "aws_caller_identity" "current" {}
 
 module "ecr" {
   source  = "terraform-aws-modules/ecr/aws"
-  version = "~> 1.6"
+  version = "~> 2.2"
 
   repository_name = "rms"
 
