@@ -28,22 +28,6 @@ output "docker_login" {
   value       = "aws ecr get-login-password --region ${local.region} | docker login --username AWS --password-stdin ${module.registry.repository_url}"
 }
 
-output "rds_address" {
-  description = "RDS instance address"
-  value       = module.db.rds_address
-  sensitive   = true
-}
-
-output "rds_master_user_secret_name" {
-  description = "The name of the master user secret."
-  value       = module.db.master_user_secret_name
-}
-
-output "db_secret_name" {
-  description = "Friendly name of the new secret."
-  value       = module.secrets_db.secretsmanager_secret_name
-}
-
 output "mercadopago_secret_name" {
   description = "Friendly name of the new secret."
   value       = module.secrets_cognito.secretsmanager_secret_name
