@@ -35,8 +35,8 @@ resource "aws_db_parameter_group" "rms" {
   family = "postgres15"
 
   parameter {
-    name         = "rds.force_ssl"
-    value        = "0" # Desativa o SSL obrigatório
+    name  = "rds.force_ssl"
+    value = "0" # Desativa o SSL obrigatório
   }
 
   parameter {
@@ -44,6 +44,8 @@ resource "aws_db_parameter_group" "rms" {
     value        = "1" # enable logical replication
     apply_method = "pending-reboot"
   }
+
+  tags = var.tags
 }
 
 resource "aws_db_instance" "rms" {
