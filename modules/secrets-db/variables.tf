@@ -9,22 +9,15 @@ variable "tags" {
   default     = {}
 }
 
-variable "rds_identifier" {
-  description = "RDS instance identifier"
+variable "secret_name" {
+  description = "Friendly name of the new secret."
   type        = string
+  default     = "prod/RMS/Postgresql"
 }
 
-variable "rds_engine" {
-  description = "RDS instance engine"
-  type        = string
-}
 
-variable "rds_address" {
-  description = "RDS instance address"
+variable "policy_name" {
+  description = "Name of the policy."
   type        = string
-}
-
-variable "rds_port" {
-  description = "RDS instance port"
-  type        = string
+  default     = "policy-secret-db"
 }

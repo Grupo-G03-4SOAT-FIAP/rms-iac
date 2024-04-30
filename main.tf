@@ -50,37 +50,11 @@ module "network" {
 }
 
 ################################################################################
-# Kubernetes
-################################################################################
-
-module "cluster_k8s" {
-  source = "./modules/cluster_k8s"
-
-  region = local.region
-
-  vpc_id          = module.network.vpc_id
-  public_subnets  = module.network.public_subnets
-  private_subnets = module.network.private_subnets
-
-  app_namespace       = "rms" # O 'name' do namespace do k8s onde será executada a sua aplicação
-  serviceaccount_name = "aws-iam-serviceaccount"
-
-  tags = local.tags
-}
-
-module "registry" {
-  source = "./modules/registry"
-
-  region = local.region
-  tags   = local.tags
-}
-
-################################################################################
 # Database
 ################################################################################
 
 module "db" {
-  source = "./modules/db"
+  source = "./modules/db-sql"
 
   region = local.region
 
@@ -89,49 +63,6 @@ module "db" {
   private_subnets = module.network.private_subnets
 
   tags = local.tags
-}
-
-module "secrets_db" {
-  source = "./modules/secrets-db"
-
-  rds_address    = module.db.rds_address
-  rds_port       = module.db.rds_port
-  rds_identifier = module.db.rds_identifier
-  rds_engine     = module.db.rds_engine
-
-  region = local.region
-  tags   = local.tags
-}
-
-resource "aws_iam_role_policy_attachment" "db_secret_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.secrets_db.secretsmanager_secret_policy_arn
-
-  depends_on = [
-    module.cluster_k8s,
-    module.db
-  ]
-}
-
-################################################################################
-# Secrets
-################################################################################
-
-module "secrets_mercadopago" {
-  source = "./modules/secrets-mercadopago"
-
-  region = local.region
-  tags   = local.tags
-}
-
-resource "aws_iam_role_policy_attachment" "mercadopago_secret_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.secrets_mercadopago.secretsmanager_secret_policy_arn
-
-  depends_on = [
-    module.cluster_k8s,
-    module.secrets_mercadopago
-  ]
 }
 
 ################################################################################
@@ -163,6 +94,100 @@ resource "aws_iam_role_policy_attachment" "cognito_secret_to_role" {
     module.cluster_k8s,
     module.cognito_idp,
     module.secrets_cognito
+  ]
+}
+
+################################################################################
+# Kubernetes
+################################################################################
+
+module "cluster_k8s" {
+  source = "./modules/cluster-k8s"
+
+  region = local.region
+
+  vpc_id          = module.network.vpc_id
+  public_subnets  = module.network.public_subnets
+  private_subnets = module.network.private_subnets
+
+  app_namespace       = "rms" # O 'name' do namespace do k8s onde será executada a sua aplicação
+  serviceaccount_name = "aws-iam-serviceaccount"
+
+  tags = local.tags
+}
+
+module "registry" {
+  source = "./modules/registry"
+
+  region = local.region
+  tags   = local.tags
+}
+
+################################################################################
+# Secrets
+################################################################################
+
+# DB API Catálogo
+# ------------------------------
+
+module "secrets_db_catalogo" {
+  source = "./modules/secrets-db"
+
+  secret_name = "prod/catalogo/Postgresql"
+  policy_name = "policy-secret-db-catalogo"
+
+  region = local.region
+  tags   = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "db_catalogo_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.secrets_db_catalogo.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+# DB API de Pedidos
+# ------------------------------
+
+module "secrets_db_pedidos" {
+  source = "./modules/secrets-db"
+
+  secret_name = "prod/pedidos/Postgresql"
+  policy_name = "policy-secret-db-pedidos"
+
+  region = local.region
+  tags   = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "db_pedidos_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.secrets_db_pedidos.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+# Mercado Pago
+# ------------------------------
+
+module "secrets_mercadopago" {
+  source = "./modules/secrets-mercadopago"
+
+  region = local.region
+  tags   = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "mercadopago_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.secrets_mercadopago.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s,
+    module.secrets_mercadopago
   ]
 }
 
