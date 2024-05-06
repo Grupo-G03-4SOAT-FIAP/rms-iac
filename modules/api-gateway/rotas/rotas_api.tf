@@ -47,10 +47,3 @@ resource "aws_api_gateway_integration_response" "rotas" {
   http_method = aws_api_gateway_method.rotas[each.key].http_method
   status_code = aws_api_gateway_method_response.rotas[each.key].status_code
 }
-
-
-
-
-
-
-

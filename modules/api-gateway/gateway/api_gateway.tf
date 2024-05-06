@@ -15,10 +15,3 @@ resource "aws_api_gateway_resource" "my_resource" {
   parent_id   = aws_api_gateway_rest_api.minha_api.root_resource_id
   path_part   = "rms"
 }
-
-
-
-
-
-
-
