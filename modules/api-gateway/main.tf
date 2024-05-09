@@ -27,7 +27,7 @@ module "rotas_api" {
     {
       path        = "/pagamento"
       http_method = "POST"
-      uri         = "https://exemplo.com/rota2"
+      uri         = "https://exemplo.com/rota3"
     },
     # Adicione quantas rotas você precisar
   ]
