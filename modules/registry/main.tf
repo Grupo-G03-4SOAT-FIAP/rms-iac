@@ -12,7 +12,7 @@ module "ecr" {
   source  = "terraform-aws-modules/ecr/aws"
   version = "~> 2.2"
 
-  repository_name = "rms"
+  repository_name = var.repository_name
 
   repository_image_tag_mutability = "MUTABLE" # Default "IMMUTABLE"
   repository_force_delete         = true      # If true, will delete the repository even if it contains images. Defaults to false.

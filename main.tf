@@ -124,8 +124,41 @@ module "cluster_k8s" {
   tags = local.tags
 }
 
-module "registry" {
+################################################################################
+# Container Registry
+################################################################################
+
+# API Catálogo
+# ------------------------------
+
+module "registry_api_catalogo" {
   source = "./modules/registry"
+
+  repository_name = "rms-api-catalogo"
+
+  region = local.region
+  tags   = local.tags
+}
+
+# API de Pedidos
+# ------------------------------
+
+module "registry_api_pedidos" {
+  source = "./modules/registry"
+
+  repository_name = "rms-api-pedidos"
+
+  region = local.region
+  tags   = local.tags
+}
+
+# API de Pagamentos
+# ------------------------------
+
+module "registry_api_pagamentos" {
+  source = "./modules/registry"
+
+  repository_name = "rms-api-pagamentos"
 
   region = local.region
   tags   = local.tags
