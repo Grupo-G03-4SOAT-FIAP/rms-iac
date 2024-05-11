@@ -212,6 +212,28 @@ resource "aws_iam_role_policy_attachment" "db_pedidos_secret_to_role" {
   ]
 }
 
+# DB API de Pagamentos
+# ------------------------------
+
+module "secrets_db_pagamentos" {
+  source = "./modules/secrets-db"
+
+  secret_name = "prod/pagamentos/Mongodb"
+  policy_name = "policy-secret-db-pagamentos"
+
+  region = local.region
+  tags   = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "db_pagamentos_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.secrets_db_pagamentos.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
 # Mercado Pago
 # ------------------------------
 

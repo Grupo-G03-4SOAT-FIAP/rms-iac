@@ -23,8 +23,12 @@ locals {
     # Inicializa as Keys com valores default
     # Por segurança, após o provisionamento do Secret preencha os valores abaixo manualmente no Console da AWS no link abaixo: 
     # https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=prod/RMS/MercadoPago&region=us-east-1
-    username = null
-    password = null
+    username             = null
+    password             = null
+    engine               = null
+    host                 = null
+    port                 = null
+    dbInstanceIdentifier = null
   }
 }
 
