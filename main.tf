@@ -71,6 +71,9 @@ module "db" {
 
 module "api-gateway" {
   source = "./modules/api-gateway"
+
+  region = local.region
+  tags   = local.tags
 }
 
 ################################################################################

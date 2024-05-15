@@ -1,6 +1,6 @@
 resource "aws_api_gateway_rest_api" "minha_api" {
-  name        = "my-api"
-  description = "My API Gateway"
+  name        = "rms-bff"
+  description = "BFF do Restaurant Management System"
 }
 
 # resource "aws_api_gateway_authorizer" "my_authorizer" {
@@ -9,8 +9,3 @@ resource "aws_api_gateway_rest_api" "minha_api" {
 #   type          = "COGNITO_USER_POOLS"
 #   provider_arns = [var.cognito_arn]
 # }
-
-
-
-
-

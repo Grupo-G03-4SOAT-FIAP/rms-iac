@@ -8,7 +8,6 @@ variable "rotas" {
 
 variable "gateway_id" {}
 
-
 resource "aws_api_gateway_resource" "my_resource" {
   for_each = { for idx, rota in var.rotas : idx => rota }
 
@@ -16,7 +15,6 @@ resource "aws_api_gateway_resource" "my_resource" {
   parent_id   = var.gateway_id.root_resource_id
   path_part   = each.value.path
 }
-
 
 resource "aws_api_gateway_method" "rotas" {
   for_each = { for idx, rota in var.rotas : idx => rota }
