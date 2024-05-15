@@ -1,7 +1,5 @@
-# main.tf
-
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
 }
 
 module "gateway" {
@@ -14,22 +12,19 @@ module "rotas_api" {
   rotas = [
     {
       path        = "catalogo"
-      http_method = "GET"
-      uri         = "https://exemplo.com/rota1"
+      http_method = "ANY"
+      uri         = "http://www.example.com/rota1"
     },
     {
       path        = "pedido"
-      http_method = "POST"
-      uri         = "https://exemplo.com/rota2"
+      http_method = "ANY"
+      uri         = "http://www.example.com/pedido"
     },
     {
       path        = "pagamento"
-      http_method = "POST"
-      uri         = "https://exemplo.com/rota3"
+      http_method = "ANY"
+      uri         = "http://www.example.com/rota3"
     },
     # Adicione quantas rotas você precisar
   ]
 }
-
-
-
