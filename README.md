@@ -47,7 +47,7 @@ export AWS_SECRET_ACCESS_KEY=???
 
 <br>
 
-Para provisionar somente um módulo específico, use o parâmetro `-target`:
+Para provisionar somente um módulo específico, use a opção `-target`:
 
 ```sh
 terraform init
