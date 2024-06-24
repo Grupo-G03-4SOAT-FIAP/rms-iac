@@ -168,6 +168,106 @@ module "registry_api_pagamentos" {
 }
 
 ################################################################################
+# Message Broker
+################################################################################
+
+# Nova cobrança
+# ------------------------------
+
+module "fila-nova-cobranca" {
+  source = "./modules/message-broker"
+
+  region = local.region
+
+  name        = "nova-cobranca"
+  secret_name = "prod/RMS/SQSNovaCobranca"
+
+  tags = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "fila_nova_cobranca_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.fila-nova-cobranca.policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+resource "aws_iam_role_policy_attachment" "fila_nova_cobranca_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.fila-nova-cobranca.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+# Cobrança gerada
+# ------------------------------
+
+module "fila-cobranca-gerada" {
+  source = "./modules/message-broker"
+
+  region = local.region
+
+  name        = "cobranca-gerada"
+  secret_name = "prod/RMS/SQSCobrancaGerada"
+
+  tags = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "fila_cobranca_gerada_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.fila-cobranca-gerada.policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+resource "aws_iam_role_policy_attachment" "fila_cobranca_gerada_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.fila-cobranca-gerada.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+# Falha na cobrança
+# ------------------------------
+
+module "fila-falha-cobranca" {
+  source = "./modules/message-broker"
+
+  region = local.region
+
+  name        = "falha-cobranca"
+  secret_name = "prod/RMS/SQSFalhaCobranca"
+
+  tags = local.tags
+}
+
+resource "aws_iam_role_policy_attachment" "fila_falha_cobranca_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.fila-falha-cobranca.policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+resource "aws_iam_role_policy_attachment" "fila_falha_cobranca_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = module.fila-falha-cobranca.secretsmanager_secret_policy_arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+################################################################################
 # Secrets
 ################################################################################
 
