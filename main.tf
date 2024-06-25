@@ -185,24 +185,6 @@ module "fila-nova-cobranca" {
   tags = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "fila_nova_cobranca_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.fila-nova-cobranca.policy_arn
-
-  depends_on = [
-    module.cluster_k8s
-  ]
-}
-
-resource "aws_iam_role_policy_attachment" "fila_nova_cobranca_secret_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.fila-nova-cobranca.secretsmanager_secret_policy_arn
-
-  depends_on = [
-    module.cluster_k8s
-  ]
-}
-
 # Cobrança gerada
 # ------------------------------
 
@@ -215,24 +197,6 @@ module "fila-cobranca-gerada" {
   secret_name = "prod/RMS/SQSCobrancaGerada"
 
   tags = local.tags
-}
-
-resource "aws_iam_role_policy_attachment" "fila_cobranca_gerada_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.fila-cobranca-gerada.policy_arn
-
-  depends_on = [
-    module.cluster_k8s
-  ]
-}
-
-resource "aws_iam_role_policy_attachment" "fila_cobranca_gerada_secret_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.fila-cobranca-gerada.secretsmanager_secret_policy_arn
-
-  depends_on = [
-    module.cluster_k8s
-  ]
 }
 
 # Falha na cobrança
@@ -249,18 +213,86 @@ module "fila-falha-cobranca" {
   tags = local.tags
 }
 
-resource "aws_iam_role_policy_attachment" "fila_falha_cobranca_to_role" {
-  role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.fila-falha-cobranca.policy_arn
+################################################################################
+# Message Broker Policies
+################################################################################
+
+# Filas
+# ------------------------------
+
+resource "aws_iam_policy" "policy_sqs" {
+  name        = "policy-sqs-rms"
+  description = "Permite publicar e consumir mensagens nas filas do RMS no Amazon SQS"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "SQS:SendMessage",
+          "SQS:ReceiveMessage"
+        ]
+        Resource = [
+          module.fila-nova-cobranca.queue_arn,
+          module.fila-cobranca-gerada.queue_arn,
+          module.fila-falha-cobranca.queue_arn
+        ]
+      },
+    ]
+  })
+
+  tags = local.tags
 
   depends_on = [
     module.cluster_k8s
   ]
 }
 
-resource "aws_iam_role_policy_attachment" "fila_falha_cobranca_secret_to_role" {
+resource "aws_iam_role_policy_attachment" "policy_sqs_to_role" {
   role       = module.cluster_k8s.serviceaccount_role_name
-  policy_arn = module.fila-falha-cobranca.secretsmanager_secret_policy_arn
+  policy_arn = aws_iam_policy.policy_sqs.arn
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+# Secrets
+# ------------------------------
+
+resource "aws_iam_policy" "policy_secret_sqs" {
+  name        = "policy-secret-sqs-rms"
+  description = "Permite acesso somente leitura aos Secrets das filas SQS do RMS no AWS Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = [
+          module.fila-nova-cobranca.secretsmanager_secret_arn,
+          module.fila-cobranca-gerada.secretsmanager_secret_arn,
+          module.fila-falha-cobranca.secretsmanager_secret_arn
+        ]
+      },
+    ]
+  })
+
+  tags = local.tags
+
+  depends_on = [
+    module.cluster_k8s
+  ]
+}
+
+resource "aws_iam_role_policy_attachment" "fila_secret_to_role" {
+  role       = module.cluster_k8s.serviceaccount_role_name
+  policy_arn = aws_iam_policy.policy_secret_sqs.arn
 
   depends_on = [
     module.cluster_k8s

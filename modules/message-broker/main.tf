@@ -6,10 +6,6 @@ locals {
   region = var.region
 }
 
-################################################################################
-# SQS
-################################################################################
-
 module "sqs" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "4.2.0"
@@ -26,38 +22,7 @@ module "sqs" {
 }
 
 ################################################################################
-# SQS Policies
-################################################################################
-
-resource "aws_iam_policy" "policy_sqs" {
-  name        = "policy-sqs-fila-${module.sqs.queue_name}"
-  description = "Permite publicar e consumir mensagens na fila ${module.sqs.queue_name} no Amazon SQS"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "SQS:SendMessage",
-          "SQS:ReceiveMessage"
-        ]
-        Resource = module.sqs.queue_arn
-      },
-    ]
-  })
-
-  tags = var.tags
-
-  depends_on = [
-    module.sqs
-  ]
-}
-
-################################################################################
-# Secret
+# Secrets
 ################################################################################
 
 resource "aws_secretsmanager_secret" "sqs" {
@@ -87,37 +52,6 @@ locals {
 resource "aws_secretsmanager_secret_version" "version1" {
   secret_id     = aws_secretsmanager_secret.sqs.id
   secret_string = jsonencode(local.initial)
-}
-
-################################################################################
-# Secret Policies
-################################################################################
-
-resource "aws_iam_policy" "policy_secret_sqs" {
-  name        = "policy-secret-sqs-fila-${module.sqs.queue_name}"
-  description = "Permite acesso somente leitura ao Secret ${aws_secretsmanager_secret.sqs.name} no AWS Secrets Manager"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
-        ]
-        Resource = aws_secretsmanager_secret.sqs.arn
-      },
-    ]
-  })
-
-  tags = var.tags
-
-  depends_on = [
-    aws_secretsmanager_secret.sqs
-  ]
 }
 
 # Baseado no tutorial "Build and use a local module" do portal HashiCorp Developer em 
