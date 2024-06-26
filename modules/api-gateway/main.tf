@@ -7,8 +7,8 @@ module "gateway" {
 }
 
 module "rotas_api" {
-  source      = "./rotas"
-  gateway_id  = module.gateway.api_gateway_id
+  source     = "./rotas"
+  gateway_id = module.gateway.api_gateway_id
   rotas = [
     {
       path        = "catalogo"

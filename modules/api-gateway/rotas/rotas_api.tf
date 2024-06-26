@@ -29,7 +29,7 @@ resource "aws_api_gateway_integration" "rotas" {
   for_each = { for idx, rota in var.rotas : idx => rota }
 
   rest_api_id             = var.gateway_id.id
-  resource_id = aws_api_gateway_resource.my_resource[each.key].id
+  resource_id             = aws_api_gateway_resource.my_resource[each.key].id
   http_method             = aws_api_gateway_method.rotas[each.key].http_method
   integration_http_method = each.value.http_method
   type                    = "HTTP"
