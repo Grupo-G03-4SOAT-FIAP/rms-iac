@@ -231,7 +231,8 @@ resource "aws_iam_policy" "policy_sqs" {
         Effect = "Allow"
         Action = [
           "SQS:SendMessage",
-          "SQS:ReceiveMessage"
+          "SQS:ReceiveMessage",
+          "sqs:DeleteMessage"
         ]
         Resource = [
           module.fila-nova-cobranca.queue_arn,
