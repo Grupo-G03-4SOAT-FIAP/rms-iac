@@ -23,6 +23,7 @@ variable "initial" {
     # Inicializa as Keys, vazias, em branco
     # Por segurança, após o provisionamento do Secret preencha os valores abaixo manualmente no Console da AWS no link abaixo: 
     # https://us-east-1.console.aws.amazon.com/secretsmanager/secret?name=prod/RMS/MercadoPago&region=us-east-1
+    BASE_URL_API_MERCADOPAGO    = "https://api.mercadopago.com"
     ACCESS_TOKEN_MERCADOPAGO    = null
     USER_ID_MERCADOPAGO         = null
     EXTERNAL_POS_ID_MERCADOPAGO = null
