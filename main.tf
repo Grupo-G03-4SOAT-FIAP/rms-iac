@@ -213,6 +213,34 @@ module "fila-falha-cobranca" {
   tags = local.tags
 }
 
+# Pagamento realizado
+# ------------------------------
+
+module "fila-pagamento-confirmado" {
+  source = "./modules/message-broker"
+
+  region = local.region
+
+  name        = "pagamento-confirmado"
+  secret_name = "prod/RMS/SQSPagamentoRealizado"
+
+  tags = local.tags
+}
+
+# Falha pagamento
+# ------------------------------
+
+module "fila-falha-pagamento" {
+  source = "./modules/message-broker"
+
+  region = local.region
+
+  name        = "falha-pagamento"
+  secret_name = "prod/RMS/SQSFalhaPagamento"
+
+  tags = local.tags
+}
+
 ################################################################################
 # Message Broker Policies
 ################################################################################
@@ -237,7 +265,9 @@ resource "aws_iam_policy" "policy_sqs" {
         Resource = [
           module.fila-nova-cobranca.queue_arn,
           module.fila-cobranca-gerada.queue_arn,
-          module.fila-falha-cobranca.queue_arn
+          module.fila-falha-cobranca.queue_arn,
+          module.fila-pagamento-confirmado.queue_arn,
+          module.fila-falha-pagamento.queue_arn
         ]
       },
     ]
@@ -278,7 +308,9 @@ resource "aws_iam_policy" "policy_secret_sqs" {
         Resource = [
           module.fila-nova-cobranca.secretsmanager_secret_arn,
           module.fila-cobranca-gerada.secretsmanager_secret_arn,
-          module.fila-falha-cobranca.secretsmanager_secret_arn
+          module.fila-falha-cobranca.secretsmanager_secret_arn,
+          module.fila-pagamento-confirmado.secretsmanager_secret_arn,
+          module.fila-falha-pagamento.secretsmanager_secret_arn
         ]
       },
     ]
