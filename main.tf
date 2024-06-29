@@ -222,7 +222,7 @@ module "fila-pagamento-confirmado" {
   region = local.region
 
   name        = "pagamento-confirmado"
-  secret_name = "prod/RMS/SQSPagamentoRealizado"
+  secret_name = "prod/RMS/SQSPagamentoConfirmado"
 
   tags = local.tags
 }
