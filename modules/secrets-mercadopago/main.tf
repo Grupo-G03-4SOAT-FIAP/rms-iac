@@ -26,9 +26,9 @@ variable "initial" {
     BASE_URL_API_MERCADOPAGO    = "https://api.mercadopago.com"
     ACCESS_TOKEN_MERCADOPAGO    = null
     USER_ID_MERCADOPAGO         = null
-    EXTERNAL_POS_ID_MERCADOPAGO = null
+    EXTERNAL_POS_ID_MERCADOPAGO = "CAIXA01"
     WEBHOOK_URL_MERCADOPAGO     = null
-    IDEMPOTENCY_KEY_MERCADOPAGO = null
+    IDEMPOTENCY_KEY_MERCADOPAGO = "a005986e-f97c-4274-91cf-b32d2672824f"
   }
 
   type = map(string)
