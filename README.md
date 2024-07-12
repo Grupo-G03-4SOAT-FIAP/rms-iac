@@ -79,8 +79,8 @@ Isso é útil por exemplo quando o Terraform por algum motivo não é capaz de f
 
 ## Projetos relacionados
 
-BFF do Restaurant Management System (RMS)\
-https://github.com/Grupo-G03-4SOAT-FIAP/rms-bff
+API de Pedidos\
+https://github.com/Grupo-G03-4SOAT-FIAP/rms-api-pedidos
 
 ## Requisitos
 
