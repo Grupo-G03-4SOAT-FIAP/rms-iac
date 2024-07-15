@@ -67,8 +67,7 @@ resource "aws_db_instance" "rms_catalogo" {
   publicly_accessible         = true
   # skip_final_snapshot         = false
   skip_final_snapshot = true
-  # storage_encrypted   = true
-  storage_encrypted = false
+  storage_encrypted   = true
 
   tags = var.tags
 }
